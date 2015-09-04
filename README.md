@@ -27,19 +27,19 @@ If the arguments passed to the container begin with `-` for example `-something`
 will be passed to Sonar Qube.
 
 ```bash
-docker run quay.io/ukhomeofficedigital/docker-sonarqube:v0.1.0 -something
+docker run quay.io/ukhomeofficedigital/docker-sonarqube:v0.1.1 -something
 ```
 
 Likewise, no arguments will also start Sonar Qube.
 
 ```bash
-docker run quay.io/ukhomeofficedigital/docker-sonarqube:v0.1.0
+docker run quay.io/ukhomeofficedigital/docker-sonarqube:v0.1.1
 ```
 
 Otherwise it'll run what you passed in. So for example `bash` would run bash
 
 ```bash
-docker run quay.io/ukhomeofficedigital/docker-sonarqube:v0.1.0 bash
+docker run quay.io/ukhomeofficedigital/docker-sonarqube:v0.1.1 bash
 ```
 
 #### Environment Variables
@@ -55,6 +55,10 @@ docker run quay.io/ukhomeofficedigital/docker-sonarqube:v0.1.0 bash
 
 * `9000` Web Interface
 * `9092` H2 if you choose to use that database
+
+#### Volumes
+
+* `/opt/sonarqube/extensions` - Installed Extensions
 
 ## Built With
 

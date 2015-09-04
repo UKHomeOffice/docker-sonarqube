@@ -1,6 +1,11 @@
 #!/bin/bash
 set -e
 
+# Ensure that the plugins directories are created if we're mounting a fresh volume
+mkdir -p /opt/sonarqube/extensions/jdbc-driver/oracle/ \
+         /opt/sonarqube/extensions/deprecated \
+         /opt/sonarqube/extensions/plugins
+
 if [ ! -z "$SONARQUBE_JDBC_PASSWORD_PATH" ]; then
     SONARQUBE_JDBC_PASSWORD="$(cat $SONARQUBE_JDBC_PASSWORD_PATH)"
     export SONARQUBE_JDBC_PASSWORD

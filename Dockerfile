@@ -1,5 +1,19 @@
 FROM ukhomeofficedigital/centos-base
-RUN yum install -y java-1.8.0-openjdk curl unzip && yum clean all
+
+RUN yum install -y java-headless \
+                   dejavu-sans-fonts \
+                   git \
+                   wget \
+                   parallel \
+                   which \
+                   java-1.8.0-openjdk \
+                   curl \
+                   unzip && \
+    yum clean all && \
+    curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py" && \
+    python get-pip.py && \
+    rm get-pip.py && \
+    pip install awscli
 
 ENV SONARQUBE_HOME /opt/sonarqube
 
@@ -23,19 +37,21 @@ ENV SONAR_VERSION 5.1.2
 # sub   2048R/06855C1D 2015-05-25
 RUN gpg --keyserver ha.pool.sks-keyservers.net --recv-keys F1182E81C792928921DBCAB4CFCA4A29D26468DE
 
-RUN set -x \
-	&& cd /opt \
-	&& curl -o sonarqube.zip -fSL http://downloads.sonarsource.com/sonarqube/sonarqube-$SONAR_VERSION.zip \
-	&& curl -o sonarqube.zip.asc -fSL http://downloads.sonarsource.com/sonarqube/sonarqube-$SONAR_VERSION.zip.asc \
-	&& gpg --verify sonarqube.zip.asc \
-	&& unzip sonarqube.zip \
-	&& mv sonarqube-$SONAR_VERSION sonarqube \
-	&& rm sonarqube.zip* \
-	&& rm -rf $SONARQUBE_HOME/bin/*
+RUN set -x && \
+    cd /opt && \
+    curl -o sonarqube.zip -fSL http://downloads.sonarsource.com/sonarqube/sonarqube-$SONAR_VERSION.zip \
+    && curl -o sonarqube.zip.asc -fSL http://downloads.sonarsource.com/sonarqube/sonarqube-$SONAR_VERSION.zip.asc \
+    && gpg --verify sonarqube.zip.asc \
+    && unzip sonarqube.zip \
+    && mv sonarqube-$SONAR_VERSION sonarqube \
+    && rm sonarqube.zip* \
+    && rm -rf $SONARQUBE_HOME/bin/*
 
 VOLUME ["$SONARQUBE_HOME/extensions"]
 
 WORKDIR $SONARQUBE_HOME
 COPY run.sh $SONARQUBE_HOME/bin/
+COPY backup.sh $SONARQUBE_HOME/bin/
+COPY restore.sh $SONARQUBE_HOME/bin/
 ENTRYPOINT ["./bin/run.sh"]
 

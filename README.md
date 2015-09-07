@@ -27,20 +27,27 @@ If the arguments passed to the container begin with `-` for example `-something`
 will be passed to Sonar Qube.
 
 ```bash
-docker run quay.io/ukhomeofficedigital/docker-sonarqube:v0.1.1 -something
+docker run quay.io/ukhomeofficedigital/sonarqube:v0.2.0 -something
 ```
 
 Likewise, no arguments will also start Sonar Qube.
 
 ```bash
-docker run quay.io/ukhomeofficedigital/docker-sonarqube:v0.1.1
+docker run quay.io/ukhomeofficedigital/sonarqube:v0.2.0
 ```
 
 Otherwise it'll run what you passed in. So for example `bash` would run bash
 
 ```bash
-docker run quay.io/ukhomeofficedigital/docker-sonarqube:v0.1.1 bash
+docker run quay.io/ukhomeofficedigital/sonarqube:v0.2.0 bash
 ```
+
+#### Backups
+
+This container will attempt to backup and restore itself on start and stop. You can also trigger the process manually by running
+
+* `/opt/sonarqube/backup.sh`
+* `/opt/sonarqube/restore.sh`
 
 #### Environment Variables
 
@@ -50,6 +57,12 @@ docker run quay.io/ukhomeofficedigital/docker-sonarqube:v0.1.1 bash
   `SONARQUBE_JDBC_PASSWORD` if present.
 * `SONARQUBE_JDBC_URL` The JDBC url to the database for Sonar Qube. Defaults to 
   `jdbc:h2:tcp://localhost:9092/sonar`
+
+If you want to back things up, then you'll need to set these too.
+
+* `AWS_ACCESS_KEY_ID` AWS Access Key to use for backups
+* `AWS_SECRET_ACCESS_KEY` AWS Secret Key to use for backups
+* `SONAR_QUBE_BACKUP_S3_BUCKET_NAME` Bucket to backup to
 
 #### Exposed Ports
 

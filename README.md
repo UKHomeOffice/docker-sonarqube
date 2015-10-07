@@ -1,5 +1,7 @@
 # Docker Sonar Qube
 
+[![Build Status](https://travis-ci.org/UKHomeOffice/docker-sonarqube.svg?branch=master)](https://travis-ci.org/UKHomeOffice/docker-sonarqube)
+
 This is a [Sonar Qube](http://www.sonarqube.org/) Docker container.
 
 ## Getting Started

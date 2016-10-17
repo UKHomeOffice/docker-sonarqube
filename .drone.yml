@@ -15,8 +15,8 @@ pipeline:
       - DOCKER_HOST=tcp://127.0.0.1:2375
     commands:
       - docker login -u="ukhomeofficedigital+drone" -p=${DOCKER_PASSWORD} quay.io
-      - docker tag sonarqube quay.io/ukhomeofficedigital/sonarqube:${DRONE_TAG}
-      - docker push quay.io/ukhomeofficedigital/sonarqube:${DRONE_TAG}
+      - docker tag sonarqube quay.io/ukhomeofficedigital/sonarqube:${DRONE_BUILD_NUMBER}
+      - docker push quay.io/ukhomeofficedigital/sonarqube:${DRONE_BUILD_NUMBER}
     when:
       event: push
       branch: master

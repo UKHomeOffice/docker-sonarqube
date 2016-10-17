@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: sonarqube
-        image: quay.io/ukhomeofficedigital/sonarqube:{{.DRONE_TAG}}
+        image: quay.io/ukhomeofficedigital/sonarqube:{{.DRONE_BUILD_NUMBER}}
         imagePullPolicy: Always
         resources:
           limits:

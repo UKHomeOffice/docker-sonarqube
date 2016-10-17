@@ -1,0 +1,29 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/tls-acme: "true"
+    ingress.kubernetes.io/secure-backends: "true"
+  name: sonarqube
+  namespace: sonarqube
+spec:
+  rules:
+  - host: sonarqube.digital.homeoffice.gov.uk
+    http:
+      paths:
+      - backend:
+          serviceName: sonarqube
+          servicePort: 443
+        path: /
+  - host: www.sonarqube.digital.homeoffice.gov.uk
+    http:
+      paths:
+      - backend:
+          serviceName: sonarqube
+          servicePort: 443
+        path: /
+  tls:
+  - hosts:
+    - sonarqube.digital.homeoffice.gov.uk
+    - www.sonarqube.digital.homeoffice.gov.uk
+    secretName: letsencrypt-tls-sonarqube

@@ -18,7 +18,8 @@ pipeline:
       - docker tag sonarqube quay.io/ukhomeofficedigital/sonarqube:${DRONE_TAG}
       - docker push quay.io/ukhomeofficedigital/sonarqube:${DRONE_TAG}
     when:
-      event: tag
+      event: push
+      branch: master
 
   deploy_to_ops:
     image: "quay.io/ukhomeofficedigital/kd:v0.2.2"
@@ -29,7 +30,8 @@ pipeline:
     commands:
       - "kd --insecure-skip-tls-verify -f kube/sonarqube-dp.yaml -f kube/sonarqube-svc.yaml -f kube/sonarqube-ingress.yaml"
     when:
-      event: tag
+      event: push
+      branch: master
 
 services:
   dind:

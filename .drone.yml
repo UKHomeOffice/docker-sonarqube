@@ -25,10 +25,10 @@ pipeline:
     image: "quay.io/ukhomeofficedigital/kd:v0.2.2"
     environment:
       - KUBE_NAMESPACE=sonarqube
-      - KUBE_SERVER=${KUBE_SERVER_OPS}
+      - "KUBE_SERVER=https://kube-hod-ops.ops.digital.homeoffice.gov.uk"
       - INSECURE_SKIP_TLS_VERIFY=true
     commands:
-      - "kd --insecure-skip-tls-verify -f kube/sonarqube-dp.yaml -f kube/sonarqube-svc.yaml -f kube/sonarqube-ingress.yaml"
+      - "kd --debug --insecure-skip-tls-verify -f kube/sonarqube-dp.yaml -f kube/sonarqube-svc.yaml -f kube/sonarqube-ingress.yaml"
     when:
       event: push
       branch: master

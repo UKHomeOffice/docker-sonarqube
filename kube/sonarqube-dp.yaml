@@ -15,6 +15,9 @@ spec:
         name: sonarqube
         app: sonarqube
     spec:
+      serviceAccount: sonarqube
+      nodeSelector:
+        failure-domain.beta.kubernetes.io/zone: eu-west-1b
       containers:
       - name: sonarqube
         image: quay.io/ukhomeofficedigital/sonarqube:{{.DRONE_BUILD_NUMBER}}
@@ -22,7 +25,7 @@ spec:
         resources:
           limits:
             memory: 2Gi
-            cpu: 400m
+            cpu: 1000m
         env:
         - name: SONARQUBE_JDBC_USERNAME
           value: root
@@ -36,18 +39,23 @@ spec:
             configMapKeyRef:
               name: sonarqube
               key: mysql.url
-        livenessProbe:
-          exec:
-            command:
-              - /opt/sonarqube/bin/healthcheck.sh
-          initialDelaySeconds: 10
-          timeoutSeconds: 1
-        readinessProbe:
-          exec:
-            command:
-              - /opt/sonarqube/bin/healthcheck.sh
-          initialDelaySeconds: 10
-          timeoutSeconds: 1
+        - name: JAVA_OPTS
+          value: -XX:+PrintGCDetails -XX:+UseParallelGC -Xms1G -Xmx2G
+        volumeMounts:
+        - mountPath: /opt/sonarqube/extensions
+          name: sonarqube-data
+        # livenessProbe:
+        #   exec:
+        #     command:
+        #       - /opt/sonarqube/bin/healthcheck.sh
+        #   initialDelaySeconds: 10
+        #   timeoutSeconds: 1
+        # readinessProbe:
+        #   exec:
+        #     command:
+        #       - /opt/sonarqube/bin/healthcheck.sh
+        #   initialDelaySeconds: 10
+        #   timeoutSeconds: 1
       - name: tls
         image: quay.io/ukhomeofficedigital/nginx-proxy:v1.7.0
         imagePullPolicy: Always
@@ -112,3 +120,7 @@ spec:
       volumes:
         - name: certs
           emptyDir: {}
+        - name: sonarqube-data
+          awsElasticBlockStore:
+            volumeID: vol-a7832025
+            fsType: ext4

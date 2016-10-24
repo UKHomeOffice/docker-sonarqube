@@ -3,7 +3,7 @@ kind: Ingress
 metadata:
   annotations:
     kubernetes.io/tls-acme: "true"
-    ingress.kubernetes.io/secure-backends: "true"
+    ingress.kubernetes.io/secure-backends: "false"
   name: sonarqube
   namespace: sonarqube
 spec:

@@ -26,13 +26,13 @@ spec:
           limits:
             memory: 2Gi
             cpu: 1000m
-          # - -Dsonar.web.port=-1
+          # -
         ports:
-        - containerPort: 443
+        - containerPort: 8999
         - containerPort: 9000
         env:
         - name: SONARQUBE_OPTS
-          value: "-Dsonar.web.javaOpts=-server -Dsonar.web.https.port=443 -Dsonar.web.https.keyAlias=cert -Dsonar.web.https.keystoreFile=/etc/secrets/keystore.jks"
+          value: 'sonar.web.javaOpts=-server sonar.web.https.port=8999 sonar.web.https.keyAlias=cert sonar.web.https.keyPass=changeit sonar.web.https.keystoreType=JKS sonar.web.https.keystorePass=changeit sonar.web.https.keystoreFile=/etc/secrets/keystore.jks'
         - name: SONARQUBE_JDBC_USERNAME
           value: root
         - name: SONARQUBE_JDBC_PASSWORD

@@ -11,6 +11,6 @@ spec:
      targetPort: 9000
    - name: https
      port: 443
-     targetPort: 443
+     targetPort: 8889
  selector:
    name: sonarqube

@@ -17,7 +17,7 @@ fi
 
 EXITCODE=0
 
-if [ ! -z ${SONARQUBE_OPTS} ]; then
+if [ ! -z "${SONARQUBE_OPTS}" ]; then
   for opts in ${SONARQUBE_OPTS}; do
     echo ${opts} >> conf/sonar.properties
   done

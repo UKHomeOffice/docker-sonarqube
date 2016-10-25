@@ -82,7 +82,6 @@ spec:
           value: "200m"
         - name: ADD_NGINX_SERVER_CFG
           value: |
-            add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
             add_header Cache-Control private;
             add_header X-Frame-Options "SAMEORIGIN" always;
             add_header X-Content-Type-Options "nosniff" always;

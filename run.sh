@@ -17,12 +17,6 @@ fi
 
 EXITCODE=0
 
-if [ ! -z "${SONARQUBE_OPTS}" ]; then
-  for opts in ${SONARQUBE_OPTS}; do
-    echo ${opts} >> conf/sonar.properties
-  done
-fi
-
 java -jar "lib/sonar-application-$SONAR_VERSION.jar" \
   -Dsonar.log.console=true \
   -Dsonar.jdbc.username="$SONARQUBE_JDBC_USERNAME" \

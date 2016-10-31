@@ -3,7 +3,8 @@ kind: Ingress
 metadata:
   annotations:
     kubernetes.io/tls-acme: "true"
-    ingress.kubernetes.io/secure-backends: "false"
+    ingress.kubernetes.io/secure-backends: "true"
+    kubernetes.io/ingress.allow-http: "false"
   name: sonarqube
   namespace: sonarqube
 spec:
@@ -13,7 +14,7 @@ spec:
       paths:
       - backend:
           serviceName: sonarqube
-          servicePort: 443
+          servicePort: 9000
         path: /
   tls:
   - hosts:

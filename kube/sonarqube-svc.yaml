@@ -1,16 +1,19 @@
 apiVersion: v1
 kind: Service
 metadata:
- labels:
-   name: sonarqube
- name: sonarqube
+  name: sonarqube
+  labels:
+    name: sonarqube
 spec:
- ports:
-   - name: http
-     port: 80
-     targetPort: 80
-   - name: https
-     port: 443
-     targetPort: 443
- selector:
-   name: sonarqube
+  type: NodePort
+  ports:
+  - name: http
+    nodePort: 32711
+    port: 80
+    targetPort: 9000
+  - name: https
+    nodePort: 32712
+    port: 443
+    targetPort: 443
+  selector:
+    name: sonarqube

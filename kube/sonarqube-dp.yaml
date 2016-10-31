@@ -21,12 +21,16 @@ spec:
       containers:
       - name: sonarqube
         image: quay.io/ukhomeofficedigital/sonarqube:{{.DRONE_BUILD_NUMBER}}
+        ports:
+        - containerPort: 9000
         imagePullPolicy: Always
         resources:
           limits:
             memory: 2Gi
             cpu: 1000m
         env:
+        - name: SONARQUBE_OPTS
+          value: -Dsonar.web.javaOpts=-server
         - name: SONARQUBE_JDBC_USERNAME
           value: root
         - name: SONARQUBE_JDBC_PASSWORD
@@ -44,9 +48,6 @@ spec:
         volumeMounts:
         - mountPath: /opt/sonarqube/extensions
           name: sonarqube-data
-        - name: certs
-          mountPath: /etc/secrets
-          readOnly: true
         # livenessProbe:
         #   exec:
         #     command:
@@ -70,63 +71,36 @@ spec:
           value: 127.0.0.1
         - name: PROXY_SERVICE_PORT
           value: "9000"
+        - name: LOAD_BALANCER_CIDR
+          value: 10.50.0.0/16
         - name: ENABLE_UUID_PARAM
           value: "FALSE"
         - name: NAXSI_USE_DEFAULT_RULES
           value: "FALSE"
         - name: ERROR_REDIRECT_CODES
           value: "599"
-        # - name: HTTPS_REDIRECT
-        #   value: "FALSE"
         - name: CLIENT_MAX_BODY_SIZE
           value: "0"
         - name: ADD_NGINX_SERVER_CFG
           value: |
             add_header Cache-Control private;
+            add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
             add_header X-Frame-Options "SAMEORIGIN" always;
+            add_header X-Forwarded-Proto "https";
             add_header X-Content-Type-Options "nosniff" always;
             add_header X-XSS-Protection "1; mode=block" always;
-            add_header X-Forwarded-Proto "https";
-        - name: SSL_CERT
-          value: /etc/secrets/tls-bundle.pem
-        - name: SSL_KEY
-          value: /etc/secrets/tls-key.pem
+        - name: SERVER_CERT
+          value: /etc/secrets/crt
+        - name: SERVER_KEY
+          value: /etc/secrets/key
         volumeMounts:
-          - name: certs
+          - name: secrets
             mountPath: /etc/secrets
             readOnly: true
-      - name: vault-side-kick
-        image: quay.io/ukhomeofficedigital/vault-sidekick-jks:v0.2.0
-        imagePullPolicy: Always
-        resources:
-          limits:
-            memory: "100Mi"
-            cpu: 100m
-          requests:
-            memory: "50Mi"
-            cpu: 100m
-        args:
-          - -output=/etc/secrets
-          - -tls-skip-verify=true
-          - -cn=pki:services/${NAMESPACE}/pki/issue/default:common_name=sonarqube.${NAMESPACE}.svc.cluster.local,file=/etc/keystore/admin,fmt=cert,exec=/usr/bin/create-keystore.sh
-        env:
-          - name: VAULT_ADDR
-            value: "https://vault.vault.svc.cluster.local:8200"
-          - name: VAULT_TOKEN
-            valueFrom:
-              secretKeyRef:
-                name: store-token
-                key: token
-          - name: NAMESPACE
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.namespace
-        volumeMounts:
-          - mountPath: /etc/keystore
-            name: certs
       volumes:
-        - name: certs
-          emptyDir: {}
+        - name: secrets
+          secret:
+            secretName: sonarqube-secrets
         - name: sonarqube-data
           awsElasticBlockStore:
             volumeID: vol-a7832025

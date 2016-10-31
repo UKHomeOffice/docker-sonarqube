@@ -81,6 +81,8 @@ spec:
           value: "599"
         - name: CLIENT_MAX_BODY_SIZE
           value: "0"
+        - name: HTTPS_REDIRECT
+          value: "FALSE"
         - name: ADD_NGINX_SERVER_CFG
           value: |
             add_header Cache-Control private;

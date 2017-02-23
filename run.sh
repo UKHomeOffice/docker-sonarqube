@@ -23,7 +23,7 @@ java -jar "lib/sonar-application-$SONAR_VERSION.jar" \
   -Dsonar.jdbc.password="$SONARQUBE_JDBC_PASSWORD" \
   -Dsonar.jdbc.url="$SONARQUBE_JDBC_URL" \
   -Dsonar.web.javaAdditionalOpts="-Djava.security.egd=file:/dev/./urandom" \
-  #-Dsonar.embeddedDatabase.port=9092 \
+  # -Dsonar.embeddedDatabase.port=9092 \
   ${SONARQUBE_OPTS} \
   "$@"
 

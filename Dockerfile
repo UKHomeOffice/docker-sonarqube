@@ -6,7 +6,7 @@ RUN yum clean all && \
     yum clean all && \
     rpm --rebuilddb
 
-ENV SONAR_VERSION=6.1 \
+ENV SONAR_VERSION=6.2 \
     SONARQUBE_HOME=/opt/sonarqube \
     # Database configuration
     # Defaults to using H2

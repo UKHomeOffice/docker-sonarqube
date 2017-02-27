@@ -22,9 +22,8 @@ java -jar "lib/sonar-application-$SONAR_VERSION.jar" \
   -Dsonar.jdbc.username="$SONARQUBE_JDBC_USERNAME" \
   -Dsonar.jdbc.password="$SONARQUBE_JDBC_PASSWORD" \
   -Dsonar.jdbc.url="$SONARQUBE_JDBC_URL" \
+  "${SONARQUBE_OPTS}" \
   -Dsonar.web.javaAdditionalOpts="-Djava.security.egd=file:/dev/./urandom" \
-  # -Dsonar.embeddedDatabase.port=9092 \
-  ${SONARQUBE_OPTS} \
   "$@"
 
 exit ${EXITCODE}

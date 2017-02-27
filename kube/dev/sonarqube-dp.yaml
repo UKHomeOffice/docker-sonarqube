@@ -101,8 +101,6 @@ spec:
             readOnly: true
       volumes:
         - name: secrets
-          secret:
-            secretName: sonarqube-secrets
         - name: sonarqube-data
           awsElasticBlockStore:
             volumeID: vol-0f8e15378a6bc8dec

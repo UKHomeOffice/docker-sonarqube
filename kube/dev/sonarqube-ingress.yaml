@@ -14,7 +14,7 @@ spec:
       paths:
       - backend:
           serviceName: sonarqube
-          servicePort: 9000
+          servicePort: 443
         path: /
   tls:
   - hosts:

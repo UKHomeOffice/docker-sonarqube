@@ -6,8 +6,7 @@ pipeline:
     commands:
       - docker build -t sonarqube .
     when:
-      event: push
-      branch: master
+      event: [push, tag]
 
   image_to_quay:
     image: docker:1.11
@@ -15,11 +14,10 @@ pipeline:
       - DOCKER_HOST=tcp://127.0.0.1:2375
     commands:
       - docker login -u="ukhomeofficedigital+drone" -p=${DOCKER_PASSWORD} quay.io
-      - docker tag sonarqube quay.io/ukhomeofficedigital/sonarqube:${DRONE_BUILD_NUMBER}
-      - docker push quay.io/ukhomeofficedigital/sonarqube:${DRONE_BUILD_NUMBER}
+      - docker tag sonarqube quay.io/ukhomeofficedigital/sonarqube:${DRONE_TAG}
+      - docker push quay.io/ukhomeofficedigital/sonarqube:${DRONE_TAG}
     when:
-      event: push
-      branch: master
+      event: tag
 
   deploy_to_ops_dev:
     image: "quay.io/ukhomeofficedigital/kd:v0.2.2"
@@ -30,8 +28,7 @@ pipeline:
     commands:
       - "kd --debug --insecure-skip-tls-verify --retries 30 -f kube/dev/sonarqube-dp.yaml -f kube/dev/sonarqube-svc.yaml -f kube/dev/sonarqube-ingress.yaml"
     when:
-      event: push
-      branch: master
+      event: tag
 
   deploy_to_ops:
     image: "quay.io/ukhomeofficedigital/kd:v0.2.2"
@@ -40,7 +37,7 @@ pipeline:
       - "KUBE_SERVER=https://kube-hod-ops.ops.digital.homeoffice.gov.uk"
       - INSECURE_SKIP_TLS_VERIFY=true
     commands:
-      - "kd --debug --insecure-skip-tls-verify --retries 30 -f kube/sonarqube-dp.yaml -f kube/sonarqube-svc.yaml"
+      - "kd --debug --insecure-skip-tls-verify --retries 30 -f kube/sonarqube-dp.yaml -f kube/sonarqube-svc.yaml -f kube/dev/sonarqube-ingress.yaml"
     when:
       event: deployment
 

@@ -5,15 +5,9 @@ metadata:
   labels:
     name: sonarqube
 spec:
-  type: NodePort
   ports:
-  - name: http
-    nodePort: 32711
-    port: 80
-    targetPort: 9000
-  - name: https
-    nodePort: 32712
-    port: 443
-    targetPort: 443
+   - name: https
+     port: 443
+     targetPort: 443
   selector:
     name: sonarqube

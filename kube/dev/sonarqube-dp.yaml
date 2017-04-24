@@ -20,7 +20,7 @@ spec:
         failure-domain.beta.kubernetes.io/zone: eu-west-1a
       containers:
       - name: sonarqube
-        image: quay.io/ukhomeofficedigital/sonarqube:{{.DRONE_BUILD_NUMBER}}
+        image: quay.io/ukhomeofficedigital/sonarqube:{{.DRONE_TAG}}
         imagePullPolicy: Always
         resources:
           limits:
@@ -45,7 +45,7 @@ spec:
           initialDelaySeconds: 10
           timeoutSeconds: 1
       - name: tls
-        image: quay.io/ukhomeofficedigital/nginx-proxy:v1.7.0
+        image: quay.io/ukhomeofficedigital/nginx-proxy:v2.2.0
         imagePullPolicy: Always
         ports:
         - containerPort: 443

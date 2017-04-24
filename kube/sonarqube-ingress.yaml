@@ -14,9 +14,17 @@ spec:
       paths:
       - backend:
           serviceName: sonarqube
-          servicePort: 9000
+          servicePort: 443
+        path: /
+  - host: sonarqube.digital.homeoffice.gov.uk
+    http:
+      paths:
+      - backend:
+          serviceName: sonarqube
+          servicePort: 443
         path: /
   tls:
   - hosts:
     - sonarqube.ops.digital.homeoffice.gov.uk
+    - sonarqube.digital.homeoffice.gov.uk
     secretName: letsencrypt-tls-sonarqube

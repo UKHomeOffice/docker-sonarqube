@@ -6,7 +6,7 @@ pipeline:
     commands:
       - docker build -t sonarqube .
     when:
-      event: [push, tag]
+      event: push
 
   image_to_quay:
     image: docker:1.11
@@ -14,10 +14,10 @@ pipeline:
       - DOCKER_HOST=tcp://127.0.0.1:2375
     commands:
       - docker login -u="ukhomeofficedigital+drone" -p=${DOCKER_PASSWORD} quay.io
-      - docker tag sonarqube quay.io/ukhomeofficedigital/sonarqube:${DRONE_TAG}
-      - docker push quay.io/ukhomeofficedigital/sonarqube:${DRONE_TAG}
+      - docker tag sonarqube quay.io/ukhomeofficedigital/sonarqube:${DRONE_COMMIT_SHA}
+      - docker push quay.io/ukhomeofficedigital/sonarqube:${DRONE_COMMIT_SHA}
     when:
-      event: tag
+      event: push
 
   deploy_to_dev:
     image: "quay.io/ukhomeofficedigital/kd:v0.2.2"

@@ -20,7 +20,7 @@ spec:
         failure-domain.beta.kubernetes.io/zone: eu-west-1b
       containers:
       - name: sonarqube
-        image: quay.io/ukhomeofficedigital/sonarqube:{{.DRONE_TAG}}
+        image: quay.io/ukhomeofficedigital/sonarqube:{{.DRONE_COMMIT_SHA}}
         ports:
         imagePullPolicy: Always
         resources:

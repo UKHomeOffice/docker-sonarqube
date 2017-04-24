@@ -14,15 +14,15 @@ if [ ! -z "$SONARQUBE_JDBC_PASSWORD_PATH" ]; then
 fi
 
 if [ ! -z "$SONARQUBE_JDBC_USERNAME" ]; then
-  SONAR_ARGS="${SONAR_ARGS} -Dsonar.jdbc.username=\"$SONARQUBE_JDBC_USERNAME\""
+  SONAR_ARGS="${SONAR_ARGS} -Dsonar.jdbc.username=$SONARQUBE_JDBC_USERNAME"
 fi
 
 if [ ! -z "$SONARQUBE_JDBC_PASSWORD" ]; then
-  SONAR_ARGS="${SONAR_ARGS} -Dsonar.jdbc.password=\"$SONARQUBE_JDBC_PASSWORD\""
+  SONAR_ARGS="${SONAR_ARGS} -Dsonar.jdbc.password=$SONARQUBE_JDBC_PASSWORD"
 fi
 
 if [ ! -z "$SONARQUBE_JDBC_URL" ]; then
-  SONAR_ARGS="${SONAR_ARGS} -Dsonar.jdbc.url=\"$SONARQUBE_JDBC_URL\""
+  SONAR_ARGS="${SONAR_ARGS} -Dsonar.jdbc.url=$SONARQUBE_JDBC_URL"
 else
   SONAR_ARGS="${SONAR_ARGS} -Dsonar.embeddedDatabase.port=9092"
 fi

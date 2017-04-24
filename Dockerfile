@@ -1,4 +1,4 @@
-FROM quay.io/ukhomeofficedigital/openjdk8:v1.1.0
+FROM quay.io/ukhomeofficedigital/openjdk8:v1.8.0.131
 
 RUN yum clean all && \
     yum update -y && \

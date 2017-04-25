@@ -20,25 +20,25 @@ pipeline:
       event: push
 
   deploy_to_dev:
-    image: "quay.io/ukhomeofficedigital/kd:v0.2.2"
+    image: "quay.io/ukhomeofficedigital/kd:v0.2.3"
     environment:
       - KUBE_NAMESPACE=sonarqube-dev
       - "KUBE_SERVER=https://kube-hod-ops.ops.digital.homeoffice.gov.uk"
       - INSECURE_SKIP_TLS_VERIFY=true
     commands:
-      - "kd --debug --insecure-skip-tls-verify --retries 30 -f kube/dev/sonarqube-dp.yaml -f kube/dev/sonarqube-svc.yaml -f kube/dev/sonarqube-ingress.yaml"
+      - "kd --insecure-skip-tls-verify --timeout 10m -f kube/dev/sonarqube-dp.yaml -f kube/dev/sonarqube-svc.yaml -f kube/dev/sonarqube-ingress.yaml"
     when:
       event: deployment
       environment: dev
 
   deploy_to_prod:
-    image: "quay.io/ukhomeofficedigital/kd:v0.2.2"
+    image: "quay.io/ukhomeofficedigital/kd:v0.2.3"
     environment:
       - KUBE_NAMESPACE=sonarqube
       - "KUBE_SERVER=https://kube-hod-ops.ops.digital.homeoffice.gov.uk"
       - INSECURE_SKIP_TLS_VERIFY=true
     commands:
-      - "kd --debug --insecure-skip-tls-verify --retries 30 -f kube/sonarqube-dp.yaml -f kube/sonarqube-svc.yaml -f kube/sonarqube-ingress.yaml"
+      - "kd --insecure-skip-tls-verify --timeout 10m -f kube/sonarqube-dp.yaml -f kube/sonarqube-svc.yaml -f kube/sonarqube-ingress.yaml"
     when:
       event: deployment
       environment: prod

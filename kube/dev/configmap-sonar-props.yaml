@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sonarqube-sonar-props
+  namespace: sonarqube-dev
+data:
+  sonar.properties: |
+    sonar.authenticator.createUsers=true
+    sonar.security.realm=keycloak
+    sonar.keycloak.json={ "realm": "sonarqube-dev", "auth-server-url": "https://sso-dev.notprod.homeoffice.gov.uk/auth", "ssl-required": "external", "resource": "sonarqube", "credentials": {   "secret": "3afc3390-0bb3-41b3-88e2-ec3bc0c5ebfd" }, "policy-enforcer": {}}

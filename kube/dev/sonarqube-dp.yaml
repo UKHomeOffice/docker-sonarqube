@@ -29,9 +29,13 @@ spec:
         env:
         - name: JAVA_OPTS
           value: -XX:+PrintGCDetails -XX:+UseParallelGC -Xms1G -Xmx2G
+        - name: USE_EMBEDDED_DATABASE
+          value: true
         volumeMounts:
-        - mountPath: /opt/sonarqube/extensions
-          name: sonarqube-data
+        - name: sonarqube-data
+          mountPath: /opt/sonarqube/extensions
+        - name: sonarqube-config
+          mountPath: /opt/sonarqube/conf
         livenessProbe:
           exec:
             command:
@@ -113,3 +117,9 @@ spec:
           awsElasticBlockStore:
             volumeID: vol-0935d4bba5381770e
             fsType: ext4
+        - name: sonarqube-config
+          configMap:
+            name: sonarqube-sonar-props
+            items:
+            - key: sonar.properties
+              path: sonar.properties

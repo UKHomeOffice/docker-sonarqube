@@ -23,7 +23,9 @@ fi
 
 if [ ! -z "$SONARQUBE_JDBC_URL" ]; then
   SONAR_ARGS="${SONAR_ARGS} -Dsonar.jdbc.url=$SONARQUBE_JDBC_URL"
-else
+fi
+
+if [[ "${USE_EMBEDDED_DATABASE}" == "true" ]]; then
   SONAR_ARGS="${SONAR_ARGS} -Dsonar.embeddedDatabase.port=9092"
 fi
 

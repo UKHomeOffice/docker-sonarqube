@@ -7,4 +7,4 @@ data:
   sonar.properties: |
     sonar.authenticator.createUsers=true
     sonar.security.realm=keycloak
-    sonar.keycloak.json={ "realm": "sonarqube-dev", "auth-server-url": "https://sso-dev.notprod.homeoffice.gov.uk/auth", "ssl-required": "external", "resource": "sonarqube", "credentials": {   "secret": "3afc3390-0bb3-41b3-88e2-ec3bc0c5ebfd" }, "policy-enforcer": {}}
+    sonar.keycloak.json={"realm": "master", "auth-server-url": "https://sso-dev.notprod.homeoffice.gov.uk/auth", "ssl-required": "external", "resource": "sonarqube-dev-realm", "credentials": {"secret": "f4903dd8-9cf9-48fb-bfcb-916a9dc7232a"}}

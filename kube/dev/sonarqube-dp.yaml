@@ -28,9 +28,9 @@ spec:
             cpu: 1000m
         env:
         - name: JAVA_OPTS
-          value: -XX:+PrintGCDetails -XX:+UseParallelGC -Xms1G -Xmx2G
+          value: "-XX:+PrintGCDetails -XX:+UseParallelGC -Xms1G -Xmx2G"
         - name: USE_EMBEDDED_DATABASE
-          value: true
+          value: "true"
         volumeMounts:
         - name: sonarqube-data
           mountPath: /opt/sonarqube/extensions
@@ -68,11 +68,7 @@ spec:
         - name: ADD_NGINX_SERVER_CFG
           value: |
             add_header Cache-Control private;
-            add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
-            add_header X-Frame-Options "SAMEORIGIN" always;
             add_header X-Forwarded-Proto "https";
-            add_header X-Content-Type-Options "nosniff" always;
-            add_header X-XSS-Protection "1; mode=block" always;
         - name: SERVER_CERT
           value: /etc/secrets/tls-bundle.pem
         - name: SERVER_KEY

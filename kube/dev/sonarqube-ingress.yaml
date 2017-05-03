@@ -9,13 +9,6 @@ metadata:
   namespace: sonarqube-dev
 spec:
   rules:
-  - host: sonarqube-dev.ops.digital.homeoffice.gov.uk
-    http:
-      paths:
-      - backend:
-          serviceName: sonarqube
-          servicePort: 443
-        path: /
   - host: sonarqube-dev.digital.homeoffice.gov.uk
     http:
       paths:
@@ -25,6 +18,5 @@ spec:
         path: /
   tls:
   - hosts:
-    - sonarqube-dev.ops.digital.homeoffice.gov.uk
     - sonarqube-dev.digital.homeoffice.gov.uk
     secretName: letsencrypt-tls-sonarqube

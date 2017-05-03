@@ -28,8 +28,6 @@ spec:
             memory: 2Gi
             cpu: 1000m
         env:
-        - name: SONARQUBE_OPTS
-          value: -Dsonar.web.javaOpts=-server
         - name: SONARQUBE_JDBC_USERNAME
           value: root
         - name: SONARQUBE_JDBC_PASSWORD

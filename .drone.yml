@@ -1,52 +1,23 @@
 pipeline:
-  build_docker_image:
-    image: docker:1.11
+  build_image:
+    image: docker:17.07.0
     environment:
-      - DOCKER_HOST=tcp://127.0.0.1:2375
+      - DOCKER_HOST=tcp://172.17.0.1:2375
     commands:
       - docker build -t sonarqube .
     when:
-      event: push
+      event: [pull_request, push]
 
   image_to_quay:
-    image: docker:1.11
+    image: docker:17.07.0
+    secrets: [docker_token]
     environment:
-      - DOCKER_HOST=tcp://127.0.0.1:2375
+      - DOCKER_HOST=tcp://172.17.0.1:2375
     commands:
-      - docker login -u="ukhomeofficedigital+drone" -p=${DOCKER_PASSWORD} quay.io
-      - docker tag sonarqube quay.io/ukhomeofficedigital/sonarqube:${DRONE_COMMIT_SHA}
-      - docker push quay.io/ukhomeofficedigital/sonarqube:${DRONE_COMMIT_SHA}
+      - docker login -u="ukhomeofficedigital+sonarqube" -p=$${DOCKER_TOKEN} quay.io
+      - docker tag sonarqube quay.io/ukhomeofficedigital/sonarqube:latest
+      - docker tag sonarqube quay.io/ukhomeofficedigital/sonarqube:$${DRONE_TAG}
+      - docker push quay.io/ukhomeofficedigital/sonarqube:latest
+      - docker push quay.io/ukhomeofficedigital/sonarqube:$${DRONE_TAG}
     when:
-      event: push
-
-  deploy_to_dev:
-    image: "quay.io/ukhomeofficedigital/kd:v0.2.3"
-    environment:
-      - KUBE_NAMESPACE=sonarqube-dev
-      - "KUBE_SERVER=https://kube-hod-ops.ops.digital.homeoffice.gov.uk"
-      - INSECURE_SKIP_TLS_VERIFY=true
-    commands:
-      - "kd --insecure-skip-tls-verify --timeout 10m -f kube/dev/sonarqube-dp.yaml -f kube/dev/sonarqube-svc.yaml -f kube/dev/sonarqube-ingress.yaml"
-    when:
-      event: deployment
-      environment: dev
-
-  deploy_to_prod:
-    image: "quay.io/ukhomeofficedigital/kd:v0.2.3"
-    environment:
-      - KUBE_NAMESPACE=sonarqube
-      - "KUBE_SERVER=https://kube-hod-ops.ops.digital.homeoffice.gov.uk"
-      - INSECURE_SKIP_TLS_VERIFY=true
-    commands:
-      - "kd --insecure-skip-tls-verify --timeout 10m -f kube/sonarqube-dp.yaml -f kube/sonarqube-svc.yaml -f kube/sonarqube-ingress.yaml"
-    when:
-      event: deployment
-      environment: prod
-
-services:
-  dind:
-    image: docker:1.11-dind
-    privileged: true
-    command:
-      - "-s"
-      - "overlay"
+      event: tag

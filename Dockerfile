@@ -1,4 +1,4 @@
-FROM quay.io/ukhomeofficedigital/openjdk8:v1.8.0.131
+FROM quay.io/ukhomeofficedigital/openjdk8:latest
 
 RUN yum clean all && \
     yum update -y && \
@@ -6,7 +6,7 @@ RUN yum clean all && \
     yum clean all && \
     rpm --rebuilddb
 
-ENV SONAR_VERSION=6.3.1 \
+ENV SONAR_VERSION=6.5 \
     SONARQUBE_HOME=/opt/sonarqube \
     # Database configuration
     # Defaults to using H2

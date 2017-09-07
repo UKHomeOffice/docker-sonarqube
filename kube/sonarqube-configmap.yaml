@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: sonarqube
-  namespace: sonarqube
-data:
-  mysql.url: "jdbc:mysql://sonarqube-db-prod-mysql.ops.digital.homeoffice.gov.uk:3306/sonar?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true&useConfigs=maxPerformance"

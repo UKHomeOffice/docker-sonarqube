@@ -14,6 +14,13 @@ ENV SONAR_VERSION=6.5 \
     SONARQUBE_JDBC_PASSWORD=sonar \
     SONARQUBE_JDBC_URL=jdbc:h2:tcp://localhost:9092/sonar
 
+RUN groupadd -r sonarqube && \
+    useradd -r -g sonarqube sonarqube -d ${SONARQUBE_HOME} && \
+    mkdir -p ${SONARQUBE_HOME} && \
+    chown -R sonarqube:sonarqube /opt
+
+USER sonarqube
+
 # Http port
 EXPOSE 9000
 
@@ -28,7 +35,7 @@ RUN set -x \
     && curl -o sonarqube.zip.asc -fSL https://sonarsource.bintray.com/Distribution/sonarqube/sonarqube-$SONAR_VERSION.zip.asc \
     #&& gpg --batch --verify sonarqube.zip.asc sonarqube.zip \
     && unzip sonarqube.zip \
-    && mv sonarqube-$SONAR_VERSION sonarqube \
+    && mv sonarqube-$SONAR_VERSION/* sonarqube/. \
     && rm sonarqube.zip* \
     && rm -rf $SONARQUBE_HOME/bin/*
 

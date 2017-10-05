@@ -2,9 +2,11 @@ FROM quay.io/ukhomeofficedigital/openjdk8:latest
 
 RUN yum clean all && \
     yum update -y --exclude iputils* && \
-    yum install -y curl unzip && \
+    yum install -y curl unzip sudo && \
     yum clean all && \
     rpm --rebuilddb
+
+RUN echo "sonarqube ALL=NOPASSWD: ALL" >> /etc/sudoers
 
 ENV SONAR_VERSION=6.5 \
     SONARQUBE_HOME=/opt/sonarqube \

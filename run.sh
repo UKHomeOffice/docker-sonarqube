@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+chown -R sonarqube:sonarqube $SONARQUBE_HOME
+
 # Ensure that the plugins directories are created if we're mounting a fresh volume
 mkdir -p extensions/jdbc-driver/oracle/ \
          extensions/deprecated \
@@ -36,6 +38,6 @@ fi
 echo "Running sonar with the following args: ${SONAR_ARGS}"
 EXITCODE=0
 
-java -jar "lib/sonar-application-$SONAR_VERSION.jar" -Dsonar.web.javaAdditionalOpts="-Djava.security.egd=file:/dev/./urandom" ${SONAR_ARGS} "$@"
+java -jar "lib/sonar-application-$SONAR_VERSION.jar" -Dsonar.web.javaAdditionalOpts="$SONARQUBE_WEB_JVM_OPTS -Djava.security.egd=file:/dev/./urandom" ${SONAR_ARGS} "$@"
 
 exit ${EXITCODE}

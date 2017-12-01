@@ -1,7 +1,8 @@
 #!/bin/bash
-set -e
 
+set +e
 chown -R sonarqube:sonarqube $SONARQUBE_HOME
+set -e
 
 # Ensure that the plugins directories are created if we're mounting a fresh volume
 mkdir -p extensions/jdbc-driver/oracle/ \

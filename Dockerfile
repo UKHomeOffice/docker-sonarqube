@@ -8,7 +8,7 @@ RUN yum clean all && \
 
 RUN echo "sonarqube ALL=NOPASSWD: ALL" >> /etc/sudoers
 
-ENV SONAR_VERSION=6.7 \
+ENV SONAR_VERSION=6.7.1 \
     SONARQUBE_HOME=/opt/sonarqube \
     # Database configuration
     # Defaults to using H2

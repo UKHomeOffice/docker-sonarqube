@@ -17,11 +17,11 @@ ENV SONAR_VERSION=6.7.1 \
     SONARQUBE_JDBC_URL=jdbc:h2:tcp://localhost:9092/sonar
 
 RUN groupadd -r sonarqube && \
-    useradd -r -g sonarqube sonarqube -d ${SONARQUBE_HOME} && \
+    useradd -r -g sonarqube -u 1000 sonarqube -d ${SONARQUBE_HOME} && \
     mkdir -p ${SONARQUBE_HOME} && \
     chown -R sonarqube:sonarqube /opt
 
-USER sonarqube
+USER 1000
 
 # Http port
 EXPOSE 9000

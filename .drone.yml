@@ -6,6 +6,17 @@ pipeline:
     commands:
       - docker build -t sonarqube .
 
+  scan:
+      # The location of the drone plugin
+    image: quay.io/ukhomeofficedigital/anchore-submission:latest
+      # The optional path of a Dockerfile
+    dockerfile: Dockerfile
+      # Note the lack of double $ here (due to the way drone injects variables"
+    image_name: sonarqube
+      # This indicates we are willing tolerate any vulnerabilities which are below medium
+    tolerates: medium
+    fail_on_detection: false
+
   image_to_quay:
     image: docker:17.07.0
     secrets: [docker_token]

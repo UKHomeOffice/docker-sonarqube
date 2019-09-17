@@ -6,6 +6,15 @@ pipeline:
     commands:
       - docker build -t sonarqube .
 
+  scan:
+    image: quay.io/ukhomeofficedigital/anchore-submission:latest
+    dockerfile: Dockerfile
+    image_name: sonarqube
+    tolerates: medium
+    fail_on_detection: true
+    when:
+      event: push
+
   image_to_quay:
     image: docker:17.07.0
     secrets: [docker_token]

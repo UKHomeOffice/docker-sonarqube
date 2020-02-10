@@ -1,13 +1,19 @@
 pipeline:
   build_image:
-    image: docker:17.07.0
+    image: docker:18.09
     environment:
       - DOCKER_HOST=tcp://172.17.0.1:2375
     commands:
       - docker build -t sonarqube .
 
+#  scan_image:
+#    image: quay.io/ukhomeofficedigital/anchore-submission:latest
+#    image_name: sonarqube
+#    when:
+#      event: push
+#
   image_to_quay:
-    image: docker:17.07.0
+    image: docker:18.09
     secrets: [docker_token]
     environment:
       - DOCKER_HOST=tcp://172.17.0.1:2375

@@ -1,4 +1,4 @@
-# Docker Sonar Qube
+Docker SonarQube
 
 [![Build Status](https://travis-ci.org/UKHomeOffice/docker-sonarqube.svg?branch=master)](https://travis-ci.org/UKHomeOffice/docker-sonarqube)
 
@@ -44,32 +44,9 @@ Otherwise it'll run what you passed in. So for example `bash` would run bash
 docker run quay.io/ukhomeofficedigital/sonarqube:v0.2.0 bash
 ```
 
-#### Backups
-
-This container will attempt to backup and restore itself on start and stop. You can also trigger the process manually by running
-
-* `/opt/sonarqube/backup.sh`
-* `/opt/sonarqube/restore.sh`
-
-#### Environment Variables
-
-* `SONARQUBE_JDBC_USERNAME` Database username for Sonar Qube. Defaults to `sonar`
-* `SONARQUBE_JDBC_PASSWORD` Database password for Sonar Qube. Defaults to `sonar`
-* `$SONARQUBE_JDBC_PASSWORD_PATH` Path to file with database password for Sonar Qube. Overwrites 
-  `SONARQUBE_JDBC_PASSWORD` if present.
-* `SONARQUBE_JDBC_URL` The JDBC url to the database for Sonar Qube. Defaults to 
-  `jdbc:h2:tcp://localhost:9092/sonar`
-
-If you want to back things up, then you'll need to set these too.
-
-* `AWS_ACCESS_KEY_ID` AWS Access Key to use for backups
-* `AWS_SECRET_ACCESS_KEY` AWS Secret Key to use for backups
-* `SONAR_QUBE_BACKUP_S3_BUCKET_NAME` Bucket to backup to
-
 #### Exposed Ports
 
 * `9000` Web Interface
-* `9092` H2 if you choose to use that database
 
 #### Volumes
 
@@ -77,7 +54,7 @@ If you want to back things up, then you'll need to set these too.
 
 ## Built With
 
-* Sonar Qube 5.1.2
+* SonarQube 7.9.2
 
 ## Contributing
 

@@ -1,25 +1,37 @@
 version: "2"
+
 services:
   sonarqube:
     build: .
     ports:
       - "9000:9000"
+    networks:
+      - sonarnet
     environment:
-      - SONARQUBE_JDBC_URL=jdbc:mysql://db:3306/sonar?useUnicode=true&characterEncoding=utf8&rewriteBatchedStatements=true
-      - SONARQUBE_JDBC_USERNAME=sonar
-      - SONARQUBE_JDBC_PASSWORD=sonar
-    depends_on:
-      - db
-    links:
-      - db
-  db:
-    image: mysql:5.7
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: sonar
-      MYSQL_DATABASE: sonar
-      MYSQL_USER: sonar
-      MYSQL_PASSWORD: sonar
+      - sonar.jdbc.url=jdbc:postgresql://db:5432/sonar
     volumes:
-      - ./db:/docker-entrypoint-initdb.d
-      - ./mysql:/etc/mysql/conf.d
+      - sonarqube_conf:/opt/sonarqube/conf
+      - sonarqube_data:/opt/sonarqube/data
+      - sonarqube_extensions:/opt/sonarqube/extensions
+
+  db:
+    image: postgres:10.10
+    networks:
+      - sonarnet
+    environment:
+      - POSTGRES_USER=sonar
+      - POSTGRES_PASSWORD=sonar
+    volumes:
+      - postgresql:/var/lib/postgresql
+      - postgresql_data:/var/lib/postgresql/data
+
+networks:
+  sonarnet:
+    driver: bridge
+
+volumes:
+  sonarqube_conf:
+  sonarqube_data:
+  sonarqube_extensions:
+  postgresql:
+  postgresql_data:

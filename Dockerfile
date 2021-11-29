@@ -1,3 +1,3 @@
-FROM sonarqube:8.5.1-community
+FROM sonarqube:8.9.3-community
 
 USER 999

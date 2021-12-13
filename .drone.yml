@@ -20,6 +20,7 @@ steps:
   image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
   environment:
     IMAGE_NAME: sonarqube:${DRONE_COMMIT_SHA}
+    WHITELIST_FILE: cve-exceptions.txt
   when:
     event:
     - push

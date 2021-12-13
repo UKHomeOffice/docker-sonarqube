@@ -1,3 +1,5 @@
-FROM sonarqube:8.5.1-community
+FROM sonarqube:8.9.3-community
+
+ENV sonar.search.javaAdditionalOpts="-Dlog4j2.formatMsgNoLookups=true"
 
 USER 999

@@ -1,27 +1,69 @@
-pipeline:
-  build_image:
-    image: docker:18.09
-    environment:
-      - DOCKER_HOST=tcp://172.17.0.1:2375
-    commands:
-      - docker build -t sonarqube .
+---
+kind: pipeline
+name: default
+type: kubernetes
 
-#  scan_image:
-#    image: quay.io/ukhomeofficedigital/anchore-submission:latest
-#    image_name: sonarqube
-#    when:
-#      event: push
-#
-  image_to_quay:
-    image: docker:18.09
-    secrets: [docker_token]
-    environment:
-      - DOCKER_HOST=tcp://172.17.0.1:2375
-    commands:
-      - docker login -u="ukhomeofficedigital+sonarqube" -p=$${DOCKER_TOKEN} quay.io
-      - docker tag sonarqube quay.io/ukhomeofficedigital/sonarqube:latest
-      - docker tag sonarqube quay.io/ukhomeofficedigital/sonarqube:$${DRONE_TAG}
-      - docker push quay.io/ukhomeofficedigital/sonarqube:latest
-      - docker push quay.io/ukhomeofficedigital/sonarqube:$${DRONE_TAG}
-    when:
-      event: tag
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: build_image
+  pull: if-not-exists
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+  commands:
+  - n=0; while [ "$n" -lt 60 ] && [ ! docker stats --no-stream ]; do n=$(( n + 1 )); sleep 1; done
+  - docker build -t sonarqube:${DRONE_COMMIT_SHA} .
+
+- name: scan_image
+  pull: always
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
+  environment:
+    IMAGE_NAME: sonarqube:${DRONE_COMMIT_SHA}
+    WHITELIST_FILE: cve-exceptions.txt
+  when:
+    event:
+    - push
+
+- name: latest_image_to_quay
+  image: plugins/docker
+  settings: 
+    registry: quay.io
+    repo: quay.io/ukhomeofficedigital/sonarqube
+    tags: latest
+  environment:
+    DOCKER_PASSWORD:
+      from_secret: docker_token
+    DOCKER_USERNAME: ukhomeofficedigital+sonarqube
+  when:
+    branch: 
+    - master
+    event:
+    - push 
+
+
+- name: image_to_quay
+  image: plugins/docker
+  settings: 
+    registry: quay.io
+    repo: quay.io/ukhomeofficedigital/sonarqube
+    tags: ${DRONE_TAG}
+  environment:
+    DOCKER_PASSWORD:
+      from_secret: docker_token
+    DOCKER_USERNAME: ukhomeofficedigital+sonarqube
+  when:
+    event:
+    - tag
+
+services:
+- name: docker
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+
+- name: anchore-submission-server
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
+  pull: always
+  commands:
+    - /run.sh server
+
+...

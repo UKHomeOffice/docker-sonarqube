@@ -27,7 +27,7 @@ steps:
 
 - name: latest_image_to_quay
   image: plugins/docker
-  settings: 
+  settings:
     registry: quay.io
     repo: quay.io/ukhomeofficedigital/sonarqube
     tags: latest
@@ -36,15 +36,15 @@ steps:
       from_secret: docker_token
     DOCKER_USERNAME: ukhomeofficedigital+sonarqube
   when:
-    branch: 
+    branch:
     - master
     event:
-    - push 
+    - push
 
 
 - name: image_to_quay
   image: plugins/docker
-  settings: 
+  settings:
     registry: quay.io
     repo: quay.io/ukhomeofficedigital/sonarqube
     tags: ${DRONE_TAG}

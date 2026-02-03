@@ -81,9 +81,9 @@ steps:
     event:
     - tag
 
-# services:
-# - name: docker
-#   image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+services:
+- name: docker
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
 
 - name: anchore-submission-server
   image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest

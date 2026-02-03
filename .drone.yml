@@ -24,8 +24,7 @@ steps:
   commands:
     - /usr/local/bin/wait
     - docker build -t sonarqube:${DRONE_COMMIT_SHA} .
-    - docker save sonarqube:${DRONE_COMMIT_SHA} -o sonarqube.tar
-
+    - docker save sonarqube:${DRONE_COMMIT_SHA} -o /drone/src/sonarqube.tar
 # - name: scan_image
 #   pull: always
 #   image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
@@ -82,9 +81,9 @@ steps:
     event:
     - tag
 
-services:
-- name: docker
-  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+# services:
+# - name: docker
+#   image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
 
 - name: anchore-submission-server
   image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest

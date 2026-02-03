@@ -15,15 +15,43 @@ steps:
   - /usr/local/bin/wait
   - docker build -t sonarqube:${DRONE_COMMIT_SHA} .
 
-- name: scan_image
+# - name: scan_image
+#   pull: always
+#   image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
+#   environment:
+#     IMAGE_NAME: sonarqube:${DRONE_COMMIT_SHA}
+#     WHITELIST_FILE: cve-exceptions.txt
+#   when:
+#     event:
+#     - push
+
+- name: trivy_scan
   pull: always
-  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/trivy/client:latest
   environment:
     IMAGE_NAME: sonarqube:${DRONE_COMMIT_SHA}
-    WHITELIST_FILE: cve-exceptions.txt
+  commands:
+    - |
+      set -e
+
+      echo "Scanning ${IMAGE_NAME} for CRITICAL vulnerabilities..."
+      trivy image \
+        --severity CRITICAL \
+        --exit-code 1 \
+        --dependency-tree \
+        "${IMAGE_NAME}"
+
+      echo "Scanning ${IMAGE_NAME} for HIGH/MEDIUM vulnerabilities (non-blocking)..."
+      trivy image \
+        --severity HIGH,MEDIUM \
+        --exit-code 0 \
+        --dependency-tree \
+        "${IMAGE_NAME}" || \
+        echo "HIGH/MEDIUM vulnerabilities found (build not blocked)."
   when:
     event:
-    - push
+      include:
+        - push
 
 - name: latest_image_to_quay
   image: plugins/docker

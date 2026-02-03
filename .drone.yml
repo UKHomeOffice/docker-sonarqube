@@ -25,8 +25,12 @@ steps:
     DOCKER_HOST: tcp://docker:2375
   commands:
     - /usr/local/bin/wait
+    - docker version
     - docker build -t sonarqube:${DRONE_COMMIT_SHA} .
     - docker save sonarqube:${DRONE_COMMIT_SHA} -o /drone/src/sonarqube.tar
+    - ls -lh /drone/src
+    - file /drone/src/sonarqube.tar
+    - chmod 644 /drone/src/sonarqube.tar
 
 - name: trivy_scan
   pull: always
@@ -34,9 +38,9 @@ steps:
   commands:
     - set -e
     - echo "Scanning TAR image for CRITICAL vulnerabilities..."
-    - trivy image --severity CRITICAL --exit-code 1 --dependency-tree --input sonarqube.tar
+    - trivy image --severity CRITICAL --exit-code 1 --dependency-tree --input /drone/src/sonarqube.tar
     - echo "Scanning TAR image for HIGH/MEDIUM vulnerabilities..."
-    - trivy image --severity HIGH,MEDIUM --exit-code 0 --dependency-tree --input sonarqube.tar || echo "HIGH/MEDIUM found (continuing)"
+    - trivy image --severity HIGH,MEDIUM --exit-code 0 --dependency-tree --input /drone/src/sonarqube.tar || echo "HIGH/MEDIUM found (continuing)"
   when:
     event:
       include:

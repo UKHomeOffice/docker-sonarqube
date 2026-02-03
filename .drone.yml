@@ -21,6 +21,8 @@ steps:
 - name: build_image
   pull: if-not-exists
   image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+  environment:
+    DOCKER_HOST: tcp://docker:2375
   commands:
     - /usr/local/bin/wait
     - docker build -t sonarqube:${DRONE_COMMIT_SHA} .
@@ -40,11 +42,10 @@ steps:
   image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/trivy/client:latest
   commands:
     - set -e
-    - IMAGE_TAR="sonarqube.tar"
     - echo "Scanning TAR image for CRITICAL vulnerabilities..."
-    - trivy image --severity CRITICAL --exit-code 1 --dependency-tree --input "${IMAGE_TAR}"
+    - trivy image --severity CRITICAL --exit-code 1 --dependency-tree --input sonarqube.tar
     - echo "Scanning TAR image for HIGH/MEDIUM vulnerabilities..."
-    - trivy image --severity HIGH,MEDIUM --exit-code 0 --dependency-tree --input "${IMAGE_TAR}" || echo "HIGH/MEDIUM vulnerabilities found (continuing)."
+    - trivy image --severity HIGH,MEDIUM --exit-code 0 --dependency-tree --input sonarqube.tar || echo "HIGH/MEDIUM found (continuing)"
   when:
     event:
       include:

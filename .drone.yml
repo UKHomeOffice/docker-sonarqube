@@ -40,24 +40,12 @@ steps:
   pull: always
   image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/trivy/client:latest
   commands:
-    - |
-      set -e
-      IMAGE_TAR="sonarqube.tar"
-
-      echo "Scanning TAR image for CRITICAL vulnerabilities..."
-      trivy image \
-        --severity CRITICAL \
-        --exit-code 1 \
-        --dependency-tree \
-        --input "${IMAGE_TAR}"
-
-      echo "Scanning TAR image for HIGH/MEDIUM vulnerabilities..."
-      trivy image \
-        --severity HIGH,MEDIUM \
-        --exit-code 0 \
-        --dependency-tree \
-        --input "${IMAGE_TAR}" || \
-        echo "HIGH/MEDIUM vulnerabilities found (continuing)."
+    - set -e
+    - IMAGE_TAR="sonarqube.tar"
+    - echo "Scanning TAR image for CRITICAL vulnerabilities..."
+    - trivy image --severity CRITICAL --exit-code 1 --dependency-tree --input "${IMAGE_TAR}"
+    - echo "Scanning TAR image for HIGH/MEDIUM vulnerabilities..."
+    - trivy image --severity HIGH,MEDIUM --exit-code 0 --dependency-tree --input "${IMAGE_TAR}" || echo "HIGH/MEDIUM vulnerabilities found (continuing)."
   when:
     event:
       include:

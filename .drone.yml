@@ -28,26 +28,26 @@ steps:
 - name: trivy_scan
   pull: always
   image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/trivy/client:latest
-  environment:
-    IMAGE_NAME: sonarqube:${DRONE_COMMIT_SHA}
   commands:
     - |
       set -e
 
+      IMAGE_NAME="sonarqube:${DRONE_COMMIT_SHA}"
       echo "Scanning ${IMAGE_NAME} for CRITICAL vulnerabilities..."
+
       trivy image \
         --severity CRITICAL \
         --exit-code 1 \
         --dependency-tree \
         "${IMAGE_NAME}"
 
-      echo "Scanning ${IMAGE_NAME} for HIGH/MEDIUM vulnerabilities (non-blocking)..."
+      echo "Scanning ${IMAGE_NAME} for HIGH/MEDIUM vulnerabilities..."
       trivy image \
         --severity HIGH,MEDIUM \
         --exit-code 0 \
         --dependency-tree \
         "${IMAGE_NAME}" || \
-        echo "HIGH/MEDIUM vulnerabilities found (build not blocked)."
+        echo "HIGH/MEDIUM vulnerabilities found (continuing)."
   when:
     event:
       include:

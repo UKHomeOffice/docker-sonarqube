@@ -3,17 +3,28 @@ kind: pipeline
 name: default
 type: kubernetes
 
+workspace:
+  path: /drone/src
+
 platform:
   os: linux
   arch: amd64
 
 steps:
+# - name: build_image
+#   pull: if-not-exists
+#   image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+#   commands:
+#   - /usr/local/bin/wait
+#   - docker build -t sonarqube:${DRONE_COMMIT_SHA} .
+
 - name: build_image
   pull: if-not-exists
   image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
   commands:
-  - /usr/local/bin/wait
-  - docker build -t sonarqube:${DRONE_COMMIT_SHA} .
+    - /usr/local/bin/wait
+    - docker build -t sonarqube:${DRONE_COMMIT_SHA} .
+    - docker save sonarqube:${DRONE_COMMIT_SHA} -o sonarqube.tar
 
 # - name: scan_image
 #   pull: always
@@ -31,24 +42,21 @@ steps:
   commands:
     - |
       set -e
+      IMAGE_TAR="sonarqube.tar"
 
-      IMAGE_NAME="sonarqube:${DRONE_COMMIT_SHA}"
-      echo "IMAGE_NAME is: ${IMAGE_NAME}"
-
-      echo "Scanning ${IMAGE_NAME} for CRITICAL vulnerabilities..."
-
+      echo "Scanning TAR image for CRITICAL vulnerabilities..."
       trivy image \
         --severity CRITICAL \
         --exit-code 1 \
         --dependency-tree \
-        "${IMAGE_NAME}"
+        --input "${IMAGE_TAR}"
 
-      echo "Scanning ${IMAGE_NAME} for HIGH/MEDIUM vulnerabilities..."
+      echo "Scanning TAR image for HIGH/MEDIUM vulnerabilities..."
       trivy image \
         --severity HIGH,MEDIUM \
         --exit-code 0 \
         --dependency-tree \
-        "${IMAGE_NAME}" || \
+        --input "${IMAGE_TAR}" || \
         echo "HIGH/MEDIUM vulnerabilities found (continuing)."
   when:
     event:

@@ -33,6 +33,8 @@ steps:
       set -e
 
       IMAGE_NAME="sonarqube:${DRONE_COMMIT_SHA}"
+      echo "IMAGE_NAME is: ${IMAGE_NAME}"
+
       echo "Scanning ${IMAGE_NAME} for CRITICAL vulnerabilities..."
 
       trivy image \

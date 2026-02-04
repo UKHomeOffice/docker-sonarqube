@@ -28,9 +28,8 @@ steps:
     - docker version
     - docker build -t sonarqube:${DRONE_COMMIT_SHA} .
     - docker save sonarqube:${DRONE_COMMIT_SHA} -o /drone/src/sonarqube.tar
-    - ls -lh /drone/src
-    - file /drone/src/sonarqube.tar
     - chmod 644 /drone/src/sonarqube.tar
+    - ls -lh /drone/src
 
 - name: trivy_scan
   pull: always

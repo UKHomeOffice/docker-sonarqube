@@ -3,6 +3,9 @@ kind: pipeline
 name: default
 type: kubernetes
 
+workspace:
+  path: /drone/src
+
 platform:
   os: linux
   arch: amd64
@@ -11,36 +14,30 @@ steps:
 - name: build_image
   pull: if-not-exists
   image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
+  environment:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_BUILDKIT: "1"
   commands:
-  - /usr/local/bin/wait
-  - docker build -t sonarqube:${DRONE_COMMIT_SHA} .
+    - /usr/local/bin/wait
+    - docker version
+    - docker build --pull --no-cache -t sonarqube:${DRONE_COMMIT_SHA} .
+    - docker save sonarqube:${DRONE_COMMIT_SHA} -o /drone/src/sonarqube.tar
+    - chmod 644 /drone/src/sonarqube.tar
+    - ls -lh /drone/src
 
-- name: scan_image
+- name: trivy_scan
   pull: always
-  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/anchore-submission:latest
-  environment:
-    IMAGE_NAME: sonarqube:${DRONE_COMMIT_SHA}
-    WHITELIST_FILE: cve-exceptions.txt
+  image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/trivy/client:latest
+  commands:
+    - set -e
+    - echo "Scanning TAR image for CRITICAL vulnerabilities..."
+    - trivy image --severity CRITICAL --exit-code 1 --dependency-tree --input /drone/src/sonarqube.tar
+    - echo "Scanning TAR image for HIGH/MEDIUM vulnerabilities..."
+    - trivy image --severity HIGH,MEDIUM --exit-code 0 --dependency-tree --input /drone/src/sonarqube.tar || echo "HIGH/MEDIUM found (continuing)"
   when:
     event:
-    - push
-
-- name: latest_image_to_quay
-  image: plugins/docker
-  settings:
-    registry: quay.io
-    repo: quay.io/ukhomeofficedigital/sonarqube
-    tags: latest
-  environment:
-    DOCKER_PASSWORD:
-      from_secret: docker_token
-    DOCKER_USERNAME: ukhomeofficedigital+sonarqube
-  when:
-    branch:
-    - master
-    event:
-    - push
-
+      include:
+        - push
 
 - name: image_to_quay
   image: plugins/docker

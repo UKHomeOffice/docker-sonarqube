@@ -38,23 +38,6 @@ steps:
       include:
         - push
 
-- name: latest_image_to_quay
-  image: plugins/docker
-  settings:
-    registry: quay.io
-    repo: quay.io/ukhomeofficedigital/sonarqube
-    tags: latest
-  environment:
-    DOCKER_PASSWORD:
-      from_secret: docker_token
-    DOCKER_USERNAME: ukhomeofficedigital+sonarqube
-  when:
-    branch:
-    - master
-    event:
-    - push
-
-
 - name: image_to_quay
   image: plugins/docker
   settings:

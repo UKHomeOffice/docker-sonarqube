@@ -16,10 +16,11 @@ steps:
   image: 340268328991.dkr.ecr.eu-west-2.amazonaws.com/acp/dind
   environment:
     DOCKER_HOST: tcp://docker:2375
+    DOCKER_BUILDKIT: "1"
   commands:
     - /usr/local/bin/wait
     - docker version
-    - docker build -t sonarqube:${DRONE_COMMIT_SHA} .
+    - docker build --pull --no-cache -t sonarqube:${DRONE_COMMIT_SHA} .
     - docker save sonarqube:${DRONE_COMMIT_SHA} -o /drone/src/sonarqube.tar
     - chmod 644 /drone/src/sonarqube.tar
     - ls -lh /drone/src

@@ -1,4 +1,4 @@
-FROM sonarqube:26.1.0.118079-community
+FROM sonarqube:24.12.0.100206-community
 
 ENV sonar.search.javaAdditionalOpts="-Dlog4j2.formatMsgNoLookups=true"
 
